@@ -4,13 +4,12 @@
 [![Sui](https://img.shields.io/badge/Built_on-Sui_Blockchain-6FBCF0)](https://sui.io)
 [![USSD](https://img.shields.io/badge/USSD_Enabled-Yes-green)](https://africastalking.com)
 
-A **tamper-proof digital will system** for Africa, combining Next.js, MongoDB, and Sui Move to democratize estate planning.
+A **tamper-proof, accesible and cost friendly digital will system** for Africa, combining Next.js, MongoDB, and Sui Move to developed during sui hackerhouse.
 
 > **Problem Solved**: 73% of Africans lack valid wills due to costly legal processes and fraud risks. This project provides an immutable, accessible solution.
 
 ## 🚀 Key Features
 
-- 📞 **USSD Interface**: Create wills via feature phones (`*123#`)
 - 🔒 **Sui Blockchain**: Immutable will storage & automated asset distribution
 - 📱 **SMS Notifications**: Alert beneficiaries without internet access
 - 🖋️ **Digital Signatures**: Legally verifiable with NIN integration
