@@ -40,7 +40,7 @@ OOMA_TRUST/
 │   ├── lib/                # MongoDB models (User, WillMetadata)
 │   └── api/                # /api/will, /api/auth, /api/sui-listener
 │
-├── sui-move/               # Smart contracts
+├── sui_move_will_contract/ # Smart contracts
 │   ├── sources/            # Move modules (will.move, asset.move)
 │   └── tests/              # Unit/integration tests
 │
@@ -52,7 +52,7 @@ OOMA_TRUST/
 
 | Role               | Name                 | Responsibilities                              | Contact                          |
 |--------------------|----------------------|-----------------------------------------------|----------------------------------|
-| **Developer**      | Babayemi Mercy Janet | Smart contracts (Sui Move), Blockchain integration | mercyjanet013@gmail.com / [@github](https://github.com/) |
-| **Developer**      | [Dev 2 Name]         | Next.js, USSD/SMS interfaces, PWA optimization | dev2@email.com / [@github](https://github.com/) |
-| **Product Manager**| [PM Name]            | Roadmap prioritization, Legal compliance, Partnerships | pm@email.com / [@linkedin](https://linkedin.com/) |
-| **Product Designer**| [Designer Name]      | Africa-centric UX (USSD/Web), Asset visualization | designer@email.com / [@dribbble](https://dribbble.com/) |
+| **Developer**      | Babayemi Mercy Janet | Smart contracts (Sui Move), Blockchain integration | mercyjanet013@gmail.com / [@github](https://github.com/mercybabayemi) |
+| **Developer**      | Ayodeji Adesegun         | Next.js, Homepage interfaces, PWA optimization | ayodejiadesegun20@gmail.com / [@github](https://github.com/ayodejiades) |
+| **Product Manager**| Opemipo Akinwunmi            | Roadmap prioritization, Legal compliance, Partnerships | opemipoakinwumi@gmail.com / [@linkedin](https://www.linkedin.com/opemipo-akinwumi) |
+| **Product Designer**| Oluwapelumi Oyetade      | Africa-centric UX (USSD/Web), Asset visualization | oyetadejennifer@gmail.com / [@linkedin](https://linkedin.com/oluwapelumioyetade) |
