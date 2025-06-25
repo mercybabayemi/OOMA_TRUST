@@ -54,5 +54,5 @@ OOMA_TRUST/
 |--------------------|----------------------|-----------------------------------------------|----------------------------------|
 | **Developer**      | Babayemi Mercy Janet | Smart contracts (Sui Move), Blockchain integration | mercyjanet013@gmail.com / [@github](https://github.com/mercybabayemi) |
 | **Developer**      | Ayodeji Adesegun         | Next.js, Homepage interfaces, PWA optimization | ayodejiadesegun20@gmail.com / [@github](https://github.com/ayodejiades) |
-| **Product Manager**| Opemipo Akinwunmi            | Roadmap prioritization, Legal compliance, Partnerships | opemipoakinwumi@gmail.com / [@linkedin](https://www.linkedin.com/opemipo-akinwumi) |
-| **Product Designer**| Oluwapelumi Oyetade      | Africa-centric UX (USSD/Web), Asset visualization | oyetadejennifer@gmail.com / [@linkedin](https://linkedin.com/oluwapelumioyetade) |
+| **Product Manager**| Opemipo Akinwunmi            | Roadmap prioritization, Legal compliance, Partnerships | opemipoakinwumi@gmail.com / [@linkedin](https://www.linkedin.com/in/opemipo-akinwumi/) |
+| **Product Designer**| Oluwapelumi Oyetade      | Africa-centric UX (USSD/Web), Asset visualization | oyetadejennifer@gmail.com / [@linkedin](https://linkedin.com/in/oluwapelumioyetade) |
