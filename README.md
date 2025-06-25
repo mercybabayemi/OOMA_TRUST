@@ -27,8 +27,12 @@ A **tamper-proof digital will system** for Africa, combining Next.js, MongoDB, a
 | Storage         | IPFS+Filecoin            | Encrypted document storage       |
 | Auth            | NextAuth + JWT            | Biometric/SMS login              |
 
+
+# Digital Will on Sui Blockchain
 ## 📂 Repository Structure
-digital-will/
+
+```
+OOMA_TRUST/
 ├── client/                 # Next.js frontend
 │   ├── pages/              # App routes (USSD simulator, web portal)
 │   └── styles/             # Africa-centric UI (dark mode for low-bandwidth)
@@ -43,10 +47,13 @@ digital-will/
 │
 ├── docs/                   # Architecture diagrams, legal compliance
 └── docker-compose.yml      # Local dev setup (MongoDB + Sui localnet)
+```
 
 ## 👥 Team Members
-Role                    Name            Responsibilities                Contact
-Developer   ||Babayemi Mercy Janet ||Smart contracts (Sui Move), Blockchain integration ||mercyjanet013@gmail.com / @github
-Developer	[Dev 2 Name]	Next.js, USSD/SMS interfaces, PWA optimization	dev2@email.com / @github
-Product Manager	[PM Name]	Roadmap prioritization, Legal compliance, Partnerships	pm@email.com / @linkedin
-Product Designer	[Designer Name]	Africa-centric UX (USSD/Web), Asset visualization	designer@email.com
+
+| Role               | Name                 | Responsibilities                              | Contact                          |
+|--------------------|----------------------|-----------------------------------------------|----------------------------------|
+| **Developer**      | Babayemi Mercy Janet | Smart contracts (Sui Move), Blockchain integration | mercyjanet013@gmail.com / [@github](https://github.com/) |
+| **Developer**      | [Dev 2 Name]         | Next.js, USSD/SMS interfaces, PWA optimization | dev2@email.com / [@github](https://github.com/) |
+| **Product Manager**| [PM Name]            | Roadmap prioritization, Legal compliance, Partnerships | pm@email.com / [@linkedin](https://linkedin.com/) |
+| **Product Designer**| [Designer Name]      | Africa-centric UX (USSD/Web), Asset visualization | designer@email.com / [@dribbble](https://dribbble.com/) |
