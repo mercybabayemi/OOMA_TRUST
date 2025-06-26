@@ -1,4 +1,4 @@
-// file: client/src/app/page.tsx
+// client/src/app/page.tsx
 
 'use client'; 
 
@@ -6,7 +6,6 @@ import { useState } from 'react';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 
-// This is the new, correct way to handle metadata in the App Router.
 const metadata: Metadata = {
   title: "OOMA | Nigeria's Best-Rated Will Specialist",
   description: "A tamper-proof, accessible, and cost-friendly digital will system for Africa, built on the Sui Blockchain.",
@@ -71,7 +70,7 @@ export default function HomePage() {
                   <a href="/" className="hover:text-blue-900">Home</a>
                   <a href="#" className="hover:text-blue-900">About</a>
                   <a href="#" className="hover:text-blue-900">Services</a>
-                  <a href="#" className="mt-2 w-full text-center bg-yellow-400 text-blue-900 font-bold py-2 px-6 rounded-lg">
+                  <a href="/auth" className="mt-2 w-full text-center bg-yellow-400 text-blue-900 font-bold py-2 px-6 rounded-lg">
                       Sign In
                   </a>
               </div>
@@ -93,22 +92,20 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* --- Responsive Image Showcase Section --- */}
+        {/* Image Showcase Section */}
         <section className="container mx-auto px-6 -mt-36">
           <div className="relative h-56 sm:h-64 md:h-96">
-              {/* Left Card - Shadow updated from shadow-xl to shadow-2xl */}
               <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-white shadow-2xl rounded-3xl hidden md:block">
                    <Image src="/car.jpg" alt="Family car asset" layout="fill" style={{ objectFit: "cover" }} className="rounded-3xl"/>
               </div>
               
-              {/* Center Elevated Image */}
+      
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-11/12 md:w-1/2 h-full z-10">
                   <div className="relative w-full h-full shadow-2xl rounded-3xl overflow-hidden">
                       <Image src="/family.jpg" alt="Happy multi-generational family" layout="fill" style={{ objectFit: "cover" }} />
                   </div>
               </div>
 
-              {/* Right Card - Shadow updated from shadow-xl to shadow-2xl */}
               <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-gray-200 shadow-2xl rounded-3xl hidden md:block">
                    <Image src="/house.jpg" alt="Family house asset" layout="fill" style={{ objectFit: "cover" }} className="rounded-3xl"/>
               </div>
@@ -156,7 +153,7 @@ export default function HomePage() {
                   <div className="border border-gray-200 rounded-xl p-8 text-center bg-white flex flex-col justify-between transition-transform hover:-translate-y-2 shadow-sm hover:shadow-xl">
                       <div>
                           <div className="flex justify-center items-center h-20 mb-4"><Image src="/asset.png" alt="Digital Asset Icon" width={100} height={100} style={{ objectFit: "contain" }} /></div>
-                          <h3 className="text-2xl font-bold text-gray-800 mb-2">Digital Asset</h3>
+                          <h3 className="text-2xl font-bold text-gray-800 mb-2">Digital Assets</h3>
                           <p className="text-gray-500 mb-6">Secure your crypto, NFTs, and other digital valuables in a single, unified estate plan.</p>
                       </div>
                       <a href="#" className="w-full inline-block bg-blue-900 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-800 transition-colors">Secure assets</a>
@@ -219,7 +216,7 @@ export default function HomePage() {
                       <div className="space-y-3 flex flex-col text-gray-600">
                          <a href="#" className="hover:text-blue-900">Wills</a>
                          <a href="#" className="hover:text-blue-900">Insurance</a>
-                         <a href="#" className="hover:text-blue-900">Digital Asset</a>
+                         <a href="#" className="hover:text-blue-900">Digital Assets</a>
                       </div>
                   </div>
                   <div className="col-span-2 sm:col-span-1 mb-6 md:mb-0">
@@ -240,7 +237,7 @@ export default function HomePage() {
                   </div>
               </div>
               <div className="mt-16 border-t border-gray-300 pt-6 text-center text-sm text-gray-500">
-                    <p>{new Date().getFullYear()} OOMA TRUST. All Rights Reserved</p>
+                    <p>{new Date().getFullYear()} OOMA TRUST. All Rights Reserved.</p>
               </div>
           </div>
       </footer>
