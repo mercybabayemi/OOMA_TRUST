@@ -1,5 +1,4 @@
 // client/src/app/auth/page.tsx
-
 'use client';
 
 import { useState } from 'react';
@@ -37,7 +36,6 @@ export default function AuthPage() {
 
     return (
         <div className="min-h-screen bg-blue-900 flex items-center justify-center p-4 font-sans">
-         
             <div className="relative w-full max-w-5xl min-h-[720px] bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center">
 
                 <div
@@ -79,7 +77,7 @@ export default function AuthPage() {
                         </form>
                     </div>
                 </div>
-              
+
                 <div
                     className={`hidden lg:flex absolute top-0 left-1/2 w-1/2 h-full bg-amber-400 text-blue-900 flex-col items-center justify-center text-center p-12 transition-all duration-700 ease-in-out ${isSignUp ? '-translate-x-full' : ''}`}
                 >
