@@ -75,8 +75,8 @@ export default function AuthPage() {
                             <p className="text-gray-500 mb-8">Sign in or create your account instantly.</p>
                             
                             <div className="space-y-4 max-w-sm mx-auto">
-                                <SocialButton provider="Google" iconSrc="/google.svg" onClick={handleLogin} />
-                                <SocialButton provider="Sui Wallet" iconSrc="/sui.svg" onClick={handleLogin} />
+                                <SocialButton provider="Google" iconSrc="/images/google.svg" onClick={handleLogin} />
+                                <SocialButton provider="Sui Wallet" iconSrc="/images/sui.svg" onClick={handleLogin} />
                             </div>
                         </div>
                     </div>

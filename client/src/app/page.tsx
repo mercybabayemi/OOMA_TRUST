@@ -99,15 +99,15 @@ export default function HomePage() {
         <section className="container mx-auto px-6 -mt-36">
           <div className="relative h-56 sm:h-64 md:h-96">
             <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-white shadow-2xl rounded-3xl hidden md:block overflow-hidden">
-              <Image src="/car.jpg" alt="Family car asset" layout="fill" style={{ objectFit: "cover" }} />
+              <Image src="/images/car.jpg" alt="Family car asset" layout="fill" style={{ objectFit: "cover" }} />
             </div>
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-11/12 md:w-1/2 h-full z-10">
               <div className="relative w-full h-full shadow-2xl rounded-3xl overflow-hidden">
-                <Image src="/family.jpg" alt="Happy multi-generational family" fill style={{ objectFit: "cover" }} />
+                <Image src="/images/family.jpg" alt="Happy multi-generational family" fill style={{ objectFit: "cover" }} />
               </div>
             </div>
             <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-gray-200 shadow-2xl rounded-3xl hidden md:block overflow-hidden">
-              <Image src="/house.jpg" alt="Family house asset" layout="fill" style={{ objectFit: "cover", borderRadius: "1.5rem" }} />
+              <Image src="/images/house.jpg" alt="Family house asset" layout="fill" style={{ objectFit: "cover", borderRadius: "1.5rem" }} />
             </div>
           </div>
         </section>
@@ -123,8 +123,8 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="flex justify-center items-center space-x-8">
-                <Image src="/sui.jpg" alt="Sui Foundation Logo" width={150} height={50} style={{ objectFit: "contain" }} />
-                <Image src="/semicolon.jpg" alt="Semicolon Logo" width={150} height={50} style={{ objectFit: "contain" }} />
+                <Image src="/images/sui.jpg" alt="Sui Foundation Logo" width={150} height={50} style={{ objectFit: "contain" }} />
+                <Image src="/images/semicolon.jpg" alt="Semicolon Logo" width={150} height={50} style={{ objectFit: "contain" }} />
               </div>
             </div>
           </div>
@@ -136,7 +136,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="border border-gray-200 rounded-xl p-8 text-center bg-white flex flex-col justify-between transition-transform hover:-translate-y-2 shadow-sm hover:shadow-xl">
                 <div>
-                  <div className="flex justify-center items-center h-20 mb-4"><Image src="/will.png" alt="Wills Icon" width={100} height={100} style={{ objectFit: "contain" }} /></div>
+                  <div className="flex justify-center items-center h-20 mb-4"><Image src="/images/will.png" alt="Wills Icon" width={100} height={100} style={{ objectFit: "contain" }} /></div>
                   <h3 className="text-2xl font-bold text-gray-800 mb-2">Wills</h3>
                   <p className="text-gray-500 mb-6">Write your will from the comfort of your own home in just 15 minutes.</p>
                 </div>
@@ -144,7 +144,7 @@ export default function HomePage() {
               </div>
               <div className="border border-gray-200 rounded-xl p-8 text-center bg-white flex flex-col justify-between transition-transform hover:-translate-y-2 shadow-sm hover:shadow-xl">
                 <div>
-                  <div className="flex justify-center items-center h-20 mb-4"><Image src="/insure.png" alt="Insurance Icon" width={100} height={100} style={{ objectFit: "contain" }} /></div>
+                  <div className="flex justify-center items-center h-20 mb-4"><Image src="/images/insure.png" alt="Insurance Icon" width={100} height={100} style={{ objectFit: "contain" }} /></div>
                   <h3 className="text-2xl font-bold text-gray-800 mb-2">Insure</h3>
                   <p className="text-gray-500 mb-6">Insure in an immutable blockchain system accessible from any location in the world.</p>
                 </div>
@@ -152,7 +152,7 @@ export default function HomePage() {
               </div>
               <div className="border border-gray-200 rounded-xl p-8 text-center bg-white flex flex-col justify-between transition-transform hover:-translate-y-2 shadow-sm hover:shadow-xl">
                 <div>
-                  <div className="flex justify-center items-center h-20 mb-4"><Image src="/asset.png" alt="Digital Asset Icon" width={100} height={100} style={{ objectFit: "contain" }} /></div>
+                  <div className="flex justify-center items-center h-20 mb-4"><Image src="/images/asset.png" alt="Digital Asset Icon" width={100} height={100} style={{ objectFit: "contain" }} /></div>
                   <h3 className="text-2xl font-bold text-gray-800 mb-2">Digital Assets</h3>
                   <p className="text-gray-500 mb-6">Secure your crypto, NFTs, and other digital valuables in a single, unified estate plan.</p>
                 </div>
@@ -184,7 +184,7 @@ export default function HomePage() {
                 </div>
                 <div className="hidden md:flex justify-center">
                   <Image
-                    src="/call2.png"
+                    src="/images/call2.png"
                     alt="Illustration of a friendly telephone"
                     width={350}
                     height={350}
