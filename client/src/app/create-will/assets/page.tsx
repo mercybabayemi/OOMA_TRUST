@@ -5,30 +5,34 @@ import Link from 'next/link';
 import { useUser } from '@/app/context/UserContext';
 import { useSuiClient, useSignAndExecuteTransaction} from '@mysten/dapp-kit';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { getFullnodeUrl, SuiClient } from '@mysten/sui/client';
 
-const PACKAGE_ID = "0x7cbae728889ba3f3805070bad9d57e9f1e71237ce5b18a55e9bd609a11d93d71"; // IMPORTANT: Replace this
+
+const PACKAGE_ID = "0x7cbae728889ba3f3805070bad9d57e9f1e71237ce5b18a55e9bd609a11d93d71"; 
 
 export default function AssetsPage() {
+    const rpcUrl = getFullnodeUrl('testnet');
+    const suiClient = new SuiClient({ url: rpcUrl });
     const { currentUser } = useUser();
-    const suiClient = useSuiClient();
     const { mutate: signAndExecute } = useSignAndExecuteTransaction();
 
     const [assets, setAssets] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     
-    // Form State
     const [assetType, setAssetType] = useState('');
     const [description, setDescription] = useState('');
     const [value, setValue] = useState('0');
 
-    // Fetch user's existing Asset objects
     const fetchAssets = async () => {
         if (!currentUser) return;
         setIsLoading(true);
+        console.log(currentUser);
         const ownedObjects = await suiClient.getOwnedObjects({ owner: currentUser.address });
+        console.log("Owned Objects:", ownedObjects);
         const assetObjects = [];
         for (const obj of ownedObjects.data) {
+            console.log(obj.data)
             if (obj.data?.type === `${PACKAGE_ID}::will_contract::Asset`) {
                 const details = await suiClient.getObject({ id: obj.data.objectId, options: { showContent: true } });
                 if (details.data?.content?.dataType === 'moveObject') {
@@ -38,13 +42,14 @@ export default function AssetsPage() {
         }
         setAssets(assetObjects);
         setIsLoading(false);
+        return ownedObjects;
     };
 
     useEffect(() => {
         if (currentUser) fetchAssets();
     }, [currentUser]);
 
-    // Handle the creation of a new asset
+    
     const handleAddAsset = () => {
         if (!assetType || !description) {
             alert("Please fill in all fields.");

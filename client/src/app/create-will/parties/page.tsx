@@ -1,4 +1,3 @@
-// file: client/src/app/create-will/parties/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -21,9 +20,8 @@ export default function PartiesPage() {
     // Form State
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [role, setRole] = useState('Beneficiary'); // Default role
-
-    // Fetch existing WillParties objects
+    const [role, setRole] = useState('Beneficiary'); 
+    
     const fetchParties = async () => {
         if (!currentUser) return;
         setIsLoading(true);
