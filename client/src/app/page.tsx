@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 const metadata: Metadata = {
   title: "OOMA | Nigeria's Best-Rated Will Specialist",
@@ -83,29 +84,30 @@ export default function HomePage() {
             <h1 className="text-4xl md:text-6xl font-bold leading-tight max-w-4xl mx-auto">
               Where ancestral inheritance meets integrity
             </h1>
-            <button className="mt-10 bg-yellow-400 text-blue-900 font-bold py-3 px-8 rounded-lg flex items-center justify-center mx-auto transition-transform hover:scale-105 shadow-lg">
-              Write my will
-              <span className="ml-2 text-2xl font-light">→</span>
-            </button>
+            <Link href="/auth">
+              <button
+                type="button"
+                className="mt-5 bg-yellow-400 text-blue-900 font-bold py-4 px-6 rounded-lg flex items-center justify-center mx-auto transition-transform hover:scale-105 shadow-lg"
+              >
+                Write My Will
+              </button>
+            </Link>
           </div>
         </section>
 
         {/* Image Showcase Section */}
         <section className="container mx-auto px-6 -mt-36">
           <div className="relative h-56 sm:h-64 md:h-96">
-            <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-white shadow-2xl rounded-3xl hidden md:block">
-              <Image src="/car.jpg" alt="Family car asset" layout="fill" style={{ objectFit: "cover" }} className="rounded-3xl" />
+            <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-white shadow-2xl rounded-3xl hidden md:block overflow-hidden">
+              <Image src="/car.jpg" alt="Family car asset" layout="fill" style={{ objectFit: "cover" }} />
             </div>
-
-
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-11/12 md:w-1/2 h-full z-10">
               <div className="relative w-full h-full shadow-2xl rounded-3xl overflow-hidden">
-                <Image src="/family.jpg" alt="Happy multi-generational family" layout="fill" style={{ objectFit: "cover" }} />
+                <Image src="/family.jpg" alt="Happy multi-generational family" fill style={{ objectFit: "cover" }} />
               </div>
             </div>
-
-            <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-gray-200 shadow-2xl rounded-3xl hidden md:block">
-              <Image src="/house.jpg" alt="Family house asset" layout="fill" style={{ objectFit: "cover" }} className="rounded-3xl" />
+            <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-gray-200 shadow-2xl rounded-3xl hidden md:block overflow-hidden">
+              <Image src="/house.jpg" alt="Family house asset" layout="fill" style={{ objectFit: "cover", borderRadius: "1.5rem" }} />
             </div>
           </div>
         </section>
