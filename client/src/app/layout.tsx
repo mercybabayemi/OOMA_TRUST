@@ -1,12 +1,13 @@
+// file: client/src/app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { UserProvider } from "./context/UserContext";
+import { ClientProviders } from "./ClientProviders"; 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "OOMA TRUST",
-  description: "Digital Will on Sui Blockchain",
+  description: "A secure, accessible digital will system on the Sui Blockchain.",
 };
 
 export default function RootLayout({
@@ -17,9 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <UserProvider>
+        <ClientProviders>
           {children}
-        </UserProvider>
+        </ClientProviders>
       </body>
     </html>
   );

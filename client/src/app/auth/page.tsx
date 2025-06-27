@@ -41,9 +41,9 @@ export default function AuthPage() {
     
     const handleLogin = () => {
         setLoginState('loading');
-        
-        const kayodeUnverified: User = { id: 1, name: 'Kayode', isVerified: false, avatarInitial: 'K' };
-        
+
+        const kayodeUnverified: User = { id: 1, name: 'Kayode', isVerified: false, avatarInitial: 'K' , address: '0x92b564a804d86cd74d2d13324de568ba89cd3ad9825aa655e959acee229742ef' };
+
         setTimeout(() => {
             login(kayodeUnverified);
             setLoginState('success');

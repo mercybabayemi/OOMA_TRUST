@@ -2,9 +2,11 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 export interface User {
+  address: string;
   id: number;
   name: string;
   isVerified: boolean;
+  email?: string;
   avatarInitial: string;
 }
 
