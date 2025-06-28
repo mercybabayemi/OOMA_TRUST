@@ -111,7 +111,7 @@ export default function ProfilePage() {
                             <div className="p-6 bg-amber-100/50 rounded-lg text-center">
                                 <h3 className="font-bold text-gray-800 mb-2">Verification Required</h3>
                                 <p className="text-sm text-gray-600 mb-4">Please provide a government-issued ID and be ready for a liveness check.</p>
-                                <button onClick={handleVerification} className="bg-blue-900 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-800">Start Secure Verification</button>
+                                <button onClick={handleVerification} className="bg-blue-900 !text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-800">Start Secure Verification</button>
                             </div>
                         )}
                     </div>

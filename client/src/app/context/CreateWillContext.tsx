@@ -46,12 +46,12 @@ const CreateWillContext = createContext<CreateWillContextType | undefined>(undef
 const initialAssets: Asset[] = [];
 const initialParties: Party[] = [
     {
-        id: 'party_3',
-        user_name: 'Robert Brown',
+        id: 'party_1',
+        user_name: 'Oluwatosin Agbaje',
         user_role: 'Lawyer',
         relationship: 'Legal Advisor',
-        email: 'robert@example.com',
-        phone_number: '555-555-5555',
+        email: 'olu@gmail.com',
+        phone_number: '08065983265',
         user_signature: 'N/A',
         user_signature_type: 'N/A',
     },

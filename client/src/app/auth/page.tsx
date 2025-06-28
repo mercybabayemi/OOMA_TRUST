@@ -63,14 +63,13 @@ export default function AuthPage() {
     
                     <div className="absolute top-6 left-6">
                         <Link href="/" className="flex items-center text-sm font-semibold text-gray-500 hover:text-blue-900 transition-colors">
-                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                            Return to Home
+                             Return to Home
                         </Link>
                     </div>
 
                     <div className="flex-grow flex flex-col justify-center pt-12">
                         <div className="text-center">
-                           {/*<Image src="/ooma.png" alt="OOMA Logo" width={80} height={40} className="mx-auto mb-4" />*/}
+                            <Image src="/images/logo.svg" alt="OOMA Logo" width={250} height={250} className="mx-auto mb-4" />
                             <h2 className="text-3xl font-bold text-blue-900 mb-2">Secure Your Legacy</h2>
                             <p className="text-gray-500 mb-8">Sign in or create your account instantly.</p>
                             

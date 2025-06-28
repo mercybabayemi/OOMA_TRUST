@@ -83,12 +83,49 @@ export default function AssemblePage() {
     }
 
     setIsSealing(true);
-    setTimeout(() => {
-      alert('Congratulations! Your E-Will has been sealed on the Sui blockchain!\n\n(Demo) Tx Hash: 0x8f9a2b...c8d9e0f1a');
+    // Show a pop-up instead of alert
+    const popup = document.createElement('div');
+    popup.style.position = 'fixed';
+    popup.style.top = '0';
+    popup.style.left = '0';
+    popup.style.width = '100vw';
+    popup.style.height = '100vh';
+    popup.style.background = 'rgba(0,0,0,0.4)';
+    popup.style.display = 'flex';
+    popup.style.alignItems = 'center';
+    popup.style.justifyContent = 'center';
+    popup.style.zIndex = '9999';
+
+    popup.innerHTML = `
+      <div style="background:white;padding:2rem 2.5rem;border-radius:1rem;box-shadow:0 8px 32px rgba(0,0,0,0.18);max-width:90vw;text-align:center;">
+      <h2 style="font-size:1.5rem;font-weight:bold;color:#166534;margin-bottom:1rem;">Congratulations!</h2>
+      <p style="font-size:1.1rem;color:#222;margin-bottom:1.5rem;">
+        Your E-Will has been sealed on the Sui blockchain!
+      </p>
+      <div style="background:#f1f5f9;padding:1rem;border-radius:0.5rem;margin-bottom:1.5rem;font-family:monospace;">
+        Tx Hash: <span style="color:#2563eb;">0x8f9a2b...c8d9e0f1a</span>
+      </div>
+      <button id="closeWillPopup" style="background:#166534;color:white;font-weight:bold;padding:0.75rem 2rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:1rem;">
+        Go to Dashboard
+      </button>
+      </div>
+    `;
+
+    document.body.appendChild(popup);
+
+    const closePopup = () => {
+      popup.remove();
       setIsSealing(false);
       resetWill();
       router.push('/dashboard');
-    }, 3000);
+    };
+
+    popup.querySelector('#closeWillPopup')?.addEventListener('click', closePopup);
+
+    // Fallback: auto-close after 5s
+    setTimeout(() => {
+      if (document.body.contains(popup)) closePopup();
+    }, 5000);
   };
 
   return (
@@ -175,7 +212,7 @@ export default function AssemblePage() {
           <button
             onClick={handleSealWill}
             disabled={!isAgreed || isSealing || !lawyerId || previewAssets.length === 0 || previewBeneficiaries.length === 0}
-            className="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center"
+            className="bg-green-600 !text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center"
           >
             {isSealing ? (
               <>
