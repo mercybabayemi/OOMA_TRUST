@@ -1,117 +1,239 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { useUser } from '@/app/context/UserContext';
-import { useSuiClient, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
-
-const PACKAGE_ID = "0x7cbae728889ba3f3805070bad9d57e9f1e71237ce5b18a55e9bd609a11d93d71"; 
+import { useCreateWill } from '@/app/context/CreateWillContext';
+import { Pencil, Trash } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function PartiesPage() {
-    const { currentUser } = useUser();
-    const suiClient = useSuiClient();
-    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const { parties, addParty, updateParty, removeParty } = useCreateWill();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [parties, setParties] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  const [name, setName] = useState('');
+  const [relationship, setRelationship] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [userSignature, setUserSignature] = useState('');
+  const [userSignatureType, setUserSignatureType] = useState('');
+  const [role, setRole] = useState<'Beneficiary' | 'Witness' | 'Lawyer'>('Beneficiary');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-    // Form State
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [role, setRole] = useState('Beneficiary'); 
-    
-    const fetchParties = async () => {
-        if (!currentUser) return;
-        setIsLoading(true);
-        const ownedObjects = await suiClient.getOwnedObjects({ owner: currentUser.address });
-        const partyObjects = [];
-        for (const obj of ownedObjects.data) {
-            if (obj.data?.type === `${PACKAGE_ID}::will_contract::WillParties`) {
-                 const details = await suiClient.getObject({ id: obj.data.objectId, options: { showContent: true } });
-                if (details.data?.content?.dataType === 'moveObject') {
-                    partyObjects.push({ id: details.data.objectId, ...details.data.content.fields });
-                }
-            }
-        }
-        setParties(partyObjects);
-        setIsLoading(false);
-    };
+  const resetForm = () => {
+    setName('');
+    setRelationship('');
+    setEmail('');
+    setPhoneNumber('');
+    setUserSignature('');
+    setUserSignatureType('');
+    setRole('Beneficiary');
+    setEditingId(null);
+  };
 
-    useEffect(() => {
-        if (currentUser) fetchParties();
-    }, [currentUser]);
+  const handleSubmit = () => {
+    if (!name || !relationship || !email || !phoneNumber) {
+      toast.error('Please fill all required fields.');
+      return;
+    }
 
-    // Handle adding a new party (Beneficiary or Witness)
-    const handleAddParty = () => {
-        if (!name || !email) {
-            alert("Please fill in all fields.");
-            return;
-        }
-        setIsSubmitting(true);
-        const txb = new TransactionBlock();
-        const targetFunction = role === 'Beneficiary' ? 'create_beneficiary' : 'create_witness';
+    setIsSubmitting(true);
 
-        txb.moveCall({
-            target: `${PACKAGE_ID}::will_contract::${targetFunction}`,
-            arguments: [
-                txb.pure(name),
-                txb.pure("digital_sig_placeholder"), // user_signature
-                txb.pure("NIN_placeholder"), // user_signature_type
-                txb.pure("080-placeholder"), // phone_number
-                txb.pure(email),
-            ],
-        });
+    setTimeout(() => {
+      const data = {
+        user_name: name,
+        relationship,
+        user_role: role,
+        email,
+        phone_number: phoneNumber,
+        user_signature: userSignature || 'N/A',
+        user_signature_type: userSignatureType || 'N/A',
+      };
 
-        signAndExecute({ transaction: txb.serialize() }, {
-            onSuccess: () => {
-                alert(`${role} added successfully!`);
-                setName(''); setEmail('');
-                fetchParties();
-                setIsSubmitting(false);
-            },
-            onError: (err) => {
-                alert(`Error: ${err.message}`);
-                setIsSubmitting(false);
-            }
-        });
-    };
+      if (editingId) {
+        updateParty(editingId, data);
+        toast.success('Party updated!');
+      } else {
+        addParty(data);
+        toast.success('Party added!');
+      }
 
-    return (
-        <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200">
-            <h2 className="text-2xl font-bold text-blue-900 mb-6">Define Important People</h2>
-            <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6 space-y-4">
-                <h3 className="font-bold text-lg text-blue-900">Add a Beneficiary or Witness</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Full Name" className="px-4 py-2 border rounded-md" />
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email Address" className="px-4 py-2 border rounded-md" />
-                </div>
-                <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full px-4 py-2 border rounded-md bg-white">
-                    <option value="Beneficiary">Beneficiary (will receive assets)</option>
-                    <option value="Witness">Witness (will validate the will)</option>
-                </select>
-                <button onClick={handleAddParty} disabled={isSubmitting} className="bg-blue-900 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-800 disabled:bg-gray-400">
-                    {isSubmitting ? 'Adding...' : `Add ${role}`}
-                </button>
-            </div>
-            <div>
-                <h3 className="font-bold text-lg mb-4">Your Saved People</h3>
-                {isLoading ? <p>Loading...</p> : (
-                    <div className="space-y-3">
-                        {parties.length > 0 ? parties.map(p => (
-                            <div key={p.id} className="bg-white border p-4 rounded-lg flex justify-between items-center">
-                                <div><p className="font-bold">{p.user_name}</p><p className="text-sm text-gray-500">{p.email}</p></div>
-                                <span className="text-sm font-bold bg-gray-200 text-gray-700 px-3 py-1 rounded-full">{p.user_role}</span>
-                            </div>
-                        )) : <p className="text-gray-500 text-center py-4">You haven't added any people yet.</p>}
-                    </div>
-                )}
-            </div>
-            <div className="flex justify-between mt-8">
-                <Link href="/create-will/assets" className="text-gray-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100">← Back to Assets</Link>
-                <Link href="/create-will/assemble" className="bg-amber-400 text-blue-900 font-bold py-3 px-8 rounded-lg hover:bg-amber-300">Next: Assemble Will →</Link>
-            </div>
+      resetForm();
+      setIsSubmitting(false);
+    }, 800);
+  };
+
+  const handleEdit = (p: any) => {
+    setName(p.user_name);
+    setRelationship(p.relationship);
+    setEmail(p.email);
+    setPhoneNumber(p.phone_number);
+    setUserSignature(p.user_signature === 'N/A' ? '' : p.user_signature);
+    setUserSignatureType(p.user_signature_type === 'N/A' ? '' : p.user_signature_type);
+    setRole(p.user_role);
+    setEditingId(p.id);
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm('Delete this party?')) {
+      removeParty(id);
+      toast.success('Party deleted.');
+    }
+  };
+
+  return (
+    <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 max-w-5xl mx-auto space-y-10">
+      <h2 className="text-3xl font-bold text-blue-900 text-center">Step 2: Define Important People</h2>
+
+      {/* Form Section */}
+      <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 space-y-6">
+        <h3 className="text-xl font-semibold text-blue-900">
+          {editingId ? 'Edit Person' : 'Add a Person'}
+        </h3>
+
+        <div className="grid md:grid-cols-2 gap-5">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type="text"
+            placeholder="Full Name *"
+            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            value={relationship}
+            onChange={(e) => setRelationship(e.target.value)}
+            type="text"
+            placeholder="Relationship (e.g., Wife) *"
+            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Email Address *"
+            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            type="tel"
+            placeholder="Phone Number *"
+            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          />
         </div>
-    );
+
+        <div className="grid md:grid-cols-2 gap-5">
+          <input
+            value={userSignature}
+            onChange={(e) => setUserSignature(e.target.value)}
+            type="text"
+            placeholder="Digital Signature"
+            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            value={userSignatureType}
+            onChange={(e) => setUserSignatureType(e.target.value)}
+            type="text"
+            placeholder="Signature Type (e.g., NIN)"
+            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value as any)}
+          className="w-full md:w-1/2 px-4 py-2 border rounded-md bg-white focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="Beneficiary">Beneficiary</option>
+          <option value="Witness">Witness</option>
+          <option value="Lawyer">Lawyer</option>
+        </select>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="bg-blue-900 text-white !text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-800 disabled:bg-gray-400 transition-all"
+          >
+            {isSubmitting
+              ? editingId
+                ? 'Updating...'
+                : 'Adding...'
+              : editingId
+              ? 'Update Person'
+              : 'Add Person'}
+          </button>
+
+          {editingId && (
+            <button
+              onClick={resetForm}
+              className="text-gray-600 underline text-sm hover:text-gray-800"
+            >
+              Cancel Edit
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* People List */}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Saved People</h3>
+        {parties.length > 0 ? (
+          <div className="space-y-3">
+            {parties.map((p) => (
+              <div
+                key={p.id}
+                className="bg-white border p-4 rounded-lg flex justify-between items-start hover:shadow-md transition-shadow"
+              >
+                <div className="flex-1 space-y-1">
+                  <p className="font-bold text-gray-900">{p.user_name}</p>
+                  <p className="text-sm text-gray-600">{p.relationship}</p>
+                  <p className="text-sm text-gray-500">{p.email} • {p.phone_number}</p>
+                  <span className="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+                    {p.user_role}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleEdit(p)}
+                    className="p-1 text-blue-700 hover:text-blue-900 transition-colors"
+                    title="Edit"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(p.id)}
+                    className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                    title="Delete"
+                  >
+                    <Trash size={18} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-10 px-4 bg-gray-50 border border-dashed border-gray-300 rounded-lg">
+            <p className="text-gray-500 font-medium">No people added yet.</p>
+            <p className="text-sm text-gray-400 mt-1">Fill the form above to add your first party.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <div className="flex justify-between mt-10 pt-6 border-t border-gray-200">
+        <Link
+          href="/create-will/assets"
+          className="text-gray-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100"
+        >
+          Back
+        </Link>
+        <Link
+          href="/create-will/assemble"
+          className="bg-amber-400 text-blue-900 font-bold py-3 px-8 rounded-lg hover:bg-amber-300 transition-transform hover:scale-105"
+        >
+          Next
+        </Link>
+      </div>
+    </div>
+  );
 }

@@ -8,7 +8,7 @@ export const Sidebar = () => {
     const pathname = usePathname();
     const router = useRouter();
 
-    if (!currentUser) return null; 
+    if (!currentUser) return null;
 
     const handleLogout = () => {
         logout();
@@ -22,27 +22,31 @@ export const Sidebar = () => {
 
     return (
         <aside className="w-64 bg-white border-r border-gray-200 flex-col hidden lg:flex">
-            <div className="p-6 border-b border-gray-200">
-                <h1 className="text-3xl font-bold text-blue-900 tracking-wider">OOMA</h1>
-            </div>
+            <Link href="/" className="p-6 border-b border-gray-200 flex items-center justify-center">
+                <img src="/images/logo.svg" alt="OOMA Logo" className="h-10 w-auto" />
+            </Link>
             <nav className="flex-grow p-4 space-y-2">
                 {navLinks.map(link => {
                     const isActive = pathname === link.href;
                     return (
-                        <Link key={link.name} href={link.href}>
-                            <a className={`flex items-center px-4 py-2 rounded-lg font-semibold ${isActive ? 'bg-amber-100/50 text-blue-900' : 'text-gray-600 hover:bg-gray-100'}`}>
-                                <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} /></svg>
-                                {link.name}
-                            </a>
+                        <Link
+                            key={link.name}
+                            href={link.href}
+                            className={`flex items-center px-4 py-2 rounded-lg font-semibold ${isActive ? 'bg-amber-100/50 text-blue-900' : 'text-gray-600 hover:bg-gray-100'}`}
+                        >
+                            <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
+                            </svg>
+                            {link.name}
                         </Link>
                     );
                 })}
             </nav>
             <div className="p-4 border-t border-gray-200">
                 <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center font-bold text-blue-900">{currentUser.avatarInitial}</div>
+                    <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center font-bold text-blue-900">{currentUser?.avatarInitial}</div>
                     <div>
-                        <p className="font-bold text-gray-800">{currentUser.name}</p>
+                        <p className="font-bold text-gray-800">{currentUser?.name}</p>
                         <button onClick={handleLogout} className="text-sm text-red-600 hover:underline font-semibold">Log Out</button>
                     </div>
                 </div>

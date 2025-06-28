@@ -6,7 +6,9 @@ import { useUser } from '@/app/context/UserContext';
 
 const Sidebar = ({ userName, avatarInitial, isVerified, onLogout }: { userName: string; avatarInitial: string; isVerified: boolean; onLogout: () => void; }) => (
     <aside className="w-64 bg-white border-r border-gray-200 flex-col hidden lg:flex">
-        <Link href="/" className="p-6 border-b border-gray-200"><h1 className="text-3xl font-bold text-blue-900">OOMA</h1></Link>
+         <Link href="/" className="p-2 border-gray-200 flex items-center justify-center">
+            <img src="/images/logo.svg" alt="OOMA Logo" className="h-10 w-auto" />
+          </Link>
         <nav className="flex-grow p-4 space-y-2">
             <Link href="/dashboard" className="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Dashboard</Link>
             <Link
@@ -29,15 +31,24 @@ const StatusBadge = ({ status }: { status: 'unverified' | 'pending' | 'verified'
     return <span className={`px-3 py-1 text-sm font-bold rounded-full ${styles[status]}`}>{text[status]}</span>;
 };
 
+import { useEffect } from 'react';
+
 export default function ProfilePage() {
     const { currentUser, verifyUser, logout, isLoading } = useUser();
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();
 
-    const handleLogout = () => {
-        logout();
-        router.push('/auth');
-    };
+    // Redirect to /auth if not logged in
+    useEffect(() => {
+        if (!isLoading && !currentUser) {
+            router.push('/auth');
+        }
+    }, [isLoading, currentUser, router]);
+
+    // Redirect to /auth if not logged in
+    if (!currentUser) {
+        return null;
+    }
 
     if (isLoading) {
         return <div className="flex h-screen items-center justify-center"><div className="w-16 h-16 border-4 border-blue-900 border-t-transparent rounded-full animate-spin"></div></div>;
@@ -56,6 +67,11 @@ export default function ProfilePage() {
         }, 3000);
     };
     const verificationStatus = currentUser.isVerified ? 'verified' : (isPending ? 'pending' : 'unverified');
+    function handleLogout(): void {
+        logout();
+        router.push('/auth');
+    }
+
     return (
         <div className="flex h-screen bg-gray-50 font-sans">
             <Sidebar userName={currentUser.name} avatarInitial={currentUser.avatarInitial} isVerified={currentUser.isVerified} onLogout={handleLogout} />
@@ -77,7 +93,11 @@ export default function ProfilePage() {
                                 </div>
                                 <h3 className="font-semibold text-lg text-green-800">Verification Complete!</h3>
                                 <p className="text-sm text-gray-600 mb-4">You now have full access to all OOMA features.</p>
-                                <Link href="/dashboard" className="font-bold text-blue-800 hover:underline">Return to Dashboard</Link>
+                                <Link href="/dashboard">
+                                    <button className="mt-4 bg-blue-900 text-white !text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-800 transition">
+                                        Return to Dashboard
+                                    </button>
+                                </Link>
                             </div>
                         ) : verificationStatus === 'pending' ? (
                             <div className="p-6 bg-gray-100 rounded-lg text-center">

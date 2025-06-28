@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/app/context/UserContext';
+import React from 'react';
 
 const Sidebar = ({ userName, avatarInitial, isVerified, onLogout }: { userName: string; avatarInitial: string; isVerified: boolean; onLogout: () => void; }) => (
     <aside className="w-64 bg-white border-r border-gray-200 flex-col hidden lg:flex">
-        <Link href="/" className="p-6 border-b border-gray-200"><h1 className="text-3xl font-bold text-blue-900">OOMA</h1></Link>
+        <Link href="/" className="p-6 border-gray-200 flex items-center justify-center">
+            <img src="/images/logo.svg" alt="OOMA Logo" className="h-10 w-auto" />
+        </Link>
         <nav className="flex-grow p-4 space-y-2">
             <Link href="/dashboard" className="flex items-center px-4 py-2 text-gray-700 bg-amber-100/50 rounded-lg font-bold">Dashboard</Link>
             <Link
@@ -42,13 +45,20 @@ export default function DashboardPage() {
         return <div className="flex h-screen items-center justify-center"><div className="w-16 h-16 border-4 border-blue-900 border-t-transparent rounded-full animate-spin"></div></div>;
     }
 
-    if (!currentUser) {
-        router.push('/auth');
+    React.useEffect(() => {
+        if (!currentUser && !isLoading) {
+            router.push('/auth');
+        }
+    }, [currentUser, isLoading, router]);
+
+    if (!currentUser && !isLoading) {
         return null;
     }
 
-    const { name: userName, avatarInitial, isVerified } = currentUser;
-    <div className="bg-white border-2 border-amber-400 rounded-xl p-8 text-center max-w-3xl mx-auto shadow-lg"><div className="w-16 h-16 mx-auto bg-amber-100 rounded-full flex items-center justify-center mb-4"><svg className="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6" /></svg></div><h2 className="font-bold text-2xl text-blue-900 mb-2">One Last Step to Secure Your Account</h2><p className="text-gray-600 mb-6">Please complete our one-time identity verification to unlock all features.</p><Link href="/profile" className="inline-block bg-blue-900 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-800 transition-transform hover:scale-105">Start Verification</Link></div>
+    const userName = currentUser?.name ?? '';
+    const isVerified = currentUser?.isVerified ?? false;
+    const avatarInitial = userName ? userName.charAt(0).toUpperCase() : '';
+
     return (
         <div className="flex h-screen bg-gray-50 font-sans">
             <Sidebar userName={userName} avatarInitial={avatarInitial} isVerified={isVerified} onLogout={handleLogout} />

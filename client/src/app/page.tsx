@@ -42,7 +42,9 @@ export default function HomePage() {
     <div className="bg-white min-h-screen font-sans">
       <header className="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold text-gray-800 tracking-wider">OOMA</div>
+          <Link href="/" className="p-2 border-gray-200 flex items-center justify-center">
+            <img src="/images/logo.svg" alt="OOMA Logo" className="h-10 w-auto" />
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8 text-gray-600 font-medium">
@@ -51,7 +53,7 @@ export default function HomePage() {
             <a href="#" className="hover:text-blue-900 transition-colors">Services</a>
           </div>
           <a href="/auth" className="hidden md:block bg-yellow-400 text-blue-900 font-bold py-2 px-6 rounded-lg transition-transform hover:scale-105 shadow-sm">
-            Sign In
+            Sign Up
           </a>
 
           {/* Mobile Menu Button */}
@@ -70,7 +72,7 @@ export default function HomePage() {
               <a href="#" className="hover:text-blue-900">About</a>
               <a href="#" className="hover:text-blue-900">Services</a>
               <a href="/auth" className="mt-2 w-full text-center bg-yellow-400 text-blue-900 font-bold py-2 px-6 rounded-lg">
-                Sign In
+                Sign Up
               </a>
             </div>
           </div>
@@ -99,7 +101,7 @@ export default function HomePage() {
         <section className="container mx-auto px-6 -mt-36">
           <div className="relative h-56 sm:h-64 md:h-96">
             <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-white shadow-2xl rounded-3xl hidden md:block overflow-hidden">
-              <Image src="/images/car.jpg" alt="Family car asset" layout="fill" style={{ objectFit: "cover" }} />
+              <Image src="/images/car.jpg" alt="Family car asset" fill style={{ objectFit: "cover" }} />
             </div>
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-11/12 md:w-1/2 h-full z-10">
               <div className="relative w-full h-full shadow-2xl rounded-3xl overflow-hidden">
@@ -107,7 +109,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-1/3 h-4/5 bg-gray-200 shadow-2xl rounded-3xl hidden md:block overflow-hidden">
-              <Image src="/images/house.jpg" alt="Family house asset" layout="fill" style={{ objectFit: "cover", borderRadius: "1.5rem" }} />
+              <Image src="/images/house.jpg" alt="Family house asset" fill style={{ objectFit: "cover", borderRadius: "1.5rem" }} />
             </div>
           </div>
         </section>
@@ -116,12 +118,12 @@ export default function HomePage() {
         <section className="py-24 md:pt-32">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-              <div className="text-center md:text-left">
+                <div className="text-center md:text-left">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nigeria's Best-Rated Will Specialist</h2>
                 <p className="text-gray-600 leading-relaxed">
-
+                  OOMA provides a secure, tamper-proof, and accessible digital will platform built on the Sui Blockchain. Join thousands of families who trust us to protect their legacy and ensure their wishes are honored with integrity and transparency.
                 </p>
-              </div>
+                </div>
               <div className="flex justify-center items-center space-x-8">
                 <Image src="/images/sui.jpg" alt="Sui Foundation Logo" width={150} height={50} style={{ objectFit: "contain" }} />
                 <Image src="/images/semicolon.jpg" alt="Semicolon Logo" width={150} height={50} style={{ objectFit: "contain" }} />
@@ -171,10 +173,9 @@ export default function HomePage() {
                   <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">We're only a phone call away</h2>
                   <p className="text-gray-600 mb-8">Any questions? Our friendly specialists are here to help from 9am to 6pm, Monday to Friday.</p>
                   <div className="flex items-center space-x-4 mb-4 justify-center md:justify-start">
-                    <div className="flex items-center bg-gray-200 rounded-full p-1 w-20">
-                      <div className="w-1/2 h-8 bg-yellow-400 rounded-full"></div>
-                      <div className="w-1/2 h-8 bg-blue-900 rounded-full"></div>
-                    </div>
+                    <Link href="/" className="p-4 border-gray-200 flex items-center justify-center">
+                      <img src="/images/logo.svg" alt="OOMA Logo" className="h-10 w-auto" />
+                    </Link>
                     <span className="font-medium text-gray-700">Talk to Us</span>
                   </div>
                   <div className="space-y-4">

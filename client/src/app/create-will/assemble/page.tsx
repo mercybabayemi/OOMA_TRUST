@@ -1,140 +1,196 @@
-// client/src/app/create-will/assemble/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/app/context/UserContext';
-import { useSuiClient, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { useCreateWill } from '@/app/context/CreateWillContext';
 
-const PACKAGE_ID = ""; // IMPORTANT: Replace this
+const CheckboxItem = ({ item, isChecked, onToggle, showValue = false }: any) => (
+  <div className="bg-gray-50 px-4 py-3 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+    <label className="flex items-start gap-3 cursor-pointer">
+      <input 
+        type="checkbox" 
+        checked={isChecked} 
+        onChange={onToggle} 
+        className="mt-1 h-5 w-5 rounded-md border-gray-300 text-blue-900 focus:ring-blue-800" 
+      />
+      <div className="flex-1 space-y-0.5">
+        <span className="block font-semibold text-gray-800">{item.description || item.user_name}</span>
+        {item.relationship && <span className="text-xs text-gray-600 block">{item.relationship}</span>}
+        {showValue && item.value && <span className="text-sm font-semibold text-green-600 block">{item.value}</span>}
+      </div>
+      <span className="ml-auto text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+        {item.asset_type || item.user_role}
+      </span>
+    </label>
+  </div>
+);
+
+const PreviewSection = ({ title, items }: { title: string; items: any[] }) => (
+  <div>
+    <h4 className="text-md font-bold text-blue-900 mb-2">{title}</h4>
+    {items.length > 0 ? (
+      <ul className="space-y-2">
+        {items.map(item => (
+          <li key={item.id} className="text-sm text-gray-800 bg-white border-l-4 border-amber-400 rounded-md px-4 py-2">
+            <span className="font-medium">{item.description || item.user_name}</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-sm text-gray-500 italic bg-gray-50 px-4 py-3 rounded-md">None selected.</p>
+    )}
+  </div>
+);
 
 export default function AssemblePage() {
-    const { currentUser } = useUser();
-    const suiClient = useSuiClient();
-    const router = useRouter();
-    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const {
+    assets,
+    parties,
+    instructions,
+    setInstructions,
+    selectedAssetIds,
+    setSelectedAssetIds,
+    selectedBeneficiaryIds,
+    setSelectedBeneficiaryIds,
+    selectedWitnessIds,
+    setSelectedWitnessIds,
+    lawyerId,
+    setLawyerId,
+    resetWill
+  } = useCreateWill();
 
-    const [assets, setAssets] = useState<any[]>([]);
-    const [parties, setParties] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSealing, setIsSealing] = useState(false);
+  const router = useRouter();
+  const [isAgreed, setIsAgreed] = useState(false);
+  const [isSealing, setIsSealing] = useState(false);
 
-    // Form State
-    const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
-    const [selectedBeneficiaryIds, setSelectedBeneficiaryIds] = useState<string[]>([]);
-    const [selectedWitnessIds, setSelectedWitnessIds] = useState<string[]>([]);
-    const [instructions, setInstructions] = useState('');
+  const beneficiaries = useMemo(() => parties.filter(p => p.user_role === 'Beneficiary'), [parties]);
+  const witnesses = useMemo(() => parties.filter(p => p.user_role === 'Witness'), [parties]);
+  const lawyers = useMemo(() => parties.filter(p => p.user_role === 'Lawyer'), [parties]);
 
-    const fetchData = async () => {
-        if (!currentUser) return;
-        setIsLoading(true);
-        const ownedObjects = await suiClient.getOwnedObjects({ owner: currentUser.address });
-        const assetObjects = [];
-        const partyObjects = [];
+  const previewAssets = useMemo(() => assets.filter(a => selectedAssetIds.includes(a.id)), [assets, selectedAssetIds]);
+  const previewBeneficiaries = useMemo(() => beneficiaries.filter(b => selectedBeneficiaryIds.includes(b.id)), [beneficiaries, selectedBeneficiaryIds]);
+  const previewWitnesses = useMemo(() => witnesses.filter(w => selectedWitnessIds.includes(w.id)), [witnesses, selectedWitnessIds]);
 
-        for (const obj of ownedObjects.data) {
-            if (!obj.data) continue;
-            const details = await suiClient.getObject({ id: obj.data.objectId, options: { showContent: true } });
-            if(details.data?.content?.dataType !== 'moveObject') continue;
+  const handleToggle = (id: string, list: string[], setList: (ids: string[]) => void) => {
+    setList(list.includes(id) ? list.filter(item => item !== id) : [...list, id]);
+  };
 
-            if (obj.data?.type === `${PACKAGE_ID}::will_contract::Asset`) {
-                assetObjects.push({ id: details.data.objectId, ...details.data.content.fields });
-            } else if (obj.data?.type === `${PACKAGE_ID}::will_contract::WillParties`) {
-                partyObjects.push({ id: details.data.objectId, ...details.data.content.fields });
-            }
-        }
-        setAssets(assetObjects);
-        setParties(partyObjects);
-        setIsLoading(false);
-    };
+  const handleSealWill = () => {
+    if (!isAgreed || selectedAssetIds.length === 0 || selectedBeneficiaryIds.length === 0 || !lawyerId) {
+      alert("Please select at least one asset, one beneficiary, assign a lawyer, and agree to the terms.");
+      return;
+    }
 
-    useEffect(() => {
-        if (currentUser) fetchData();
-    }, [currentUser]);
-    
-    // Checkbox handlers
-    const handleCheckboxChange = (id: string, list: string[], setList: Function) => {
-        if (list.includes(id)) {
-            setList(list.filter(item => item !== id));
-        } else {
-            setList([...list, id]);
-        }
-    };
-    
-    const handleSealWill = () => {
-        if (selectedAssetIds.length === 0 || selectedBeneficiaryIds.length === 0) {
-            alert("Please select at least one asset and one beneficiary.");
-            return;
-        }
-        setIsSealing(true);
-        const txb = new TransactionBlock();
-        // For simplicity, we'll assume the first witness is the lawyer for the demo
-        const lawyerId = selectedWitnessIds[0] || selectedBeneficiaryIds[0]; 
+    setIsSealing(true);
+    setTimeout(() => {
+      alert('Congratulations! Your E-Will has been sealed on the Sui blockchain!\n\n(Demo) Tx Hash: 0x8f9a2b...c8d9e0f1a');
+      setIsSealing(false);
+      resetWill();
+      router.push('/dashboard');
+    }, 3000);
+  };
 
-        txb.moveCall({
-            target: `${PACKAGE_ID}::will_contract::create_will`,
-            arguments: [
-                txb.pure(selectedAssetIds),
-                txb.pure(lawyerId),
-                txb.pure(true), 
-                txb.pure([instructions]),
-                txb.pure(selectedBeneficiaryIds),
-                txb.pure(selectedWitnessIds),
-                txb.pure("user_digital_sig_placeholder"), 
-                txb.pure("zkLogin_Google_placeholder"), 
-            ],
-        });
+  return (
+    <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 space-y-8">
+      <h2 className="text-3xl font-bold text-blue-900">Step 3: Preview & Save Your Will</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         
-        signAndExecute({ transaction: txb.serialize() }, {
-            onSuccess: (res) => {
-                alert('Congratulations! Your Will has been sealed on the blockchain.');
-                setIsSealing(false);
-                router.push('/dashboard');
-            },
-            onError: (err) => {
-                alert(`Error: ${err.message}`);
-                setIsSealing(false);
-            }
-        });
-    };
+        {/* Left: Form */}
+        <div className="space-y-6">
+          {/* Assets */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">1. Select Assets to Include</h3>
+            <div className="space-y-3 max-h-52 overflow-y-auto p-4 bg-gray-50 rounded-md border">
+              {assets.map(asset => (
+                <CheckboxItem key={asset.id} item={asset} isChecked={selectedAssetIds.includes(asset.id)} onToggle={() => handleToggle(asset.id, selectedAssetIds, setSelectedAssetIds)} showValue />
+              ))}
+            </div>
+          </div>
 
-    return (
-        <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200">
-            <h2 className="text-2xl font-bold text-blue-900 mb-6">Assemble & Seal Your Will</h2>
-            {isLoading ? <p>Loading your data...</p> : (
-            <div className="space-y-6">
-                <div>
-                    <h3 className="font-bold text-lg text-gray-800 mb-2">Select Assets to Include</h3>
-                    <div className="space-y-2 max-h-48 overflow-y-auto p-4 bg-gray-50 rounded-md">
-                        {assets.map(a => (<div key={a.id}><label className="flex items-center"><input type="checkbox" onChange={() => handleCheckboxChange(a.id, selectedAssetIds, setSelectedAssetIds)} className="h-4 w-4 rounded mr-3" /> {a.description}</label></div>))}
-                    </div>
-                </div>
-                <div>
-                    <h3 className="font-bold text-lg text-gray-800 mb-2">Select Beneficiaries</h3>
-                     <div className="space-y-2 max-h-48 overflow-y-auto p-4 bg-gray-50 rounded-md">
-                        {parties.filter(p=>p.user_role === 'Beneficiary').map(p => (<div key={p.id}><label className="flex items-center"><input type="checkbox" onChange={() => handleCheckboxChange(p.id, selectedBeneficiaryIds, setSelectedBeneficiaryIds)} className="h-4 w-4 rounded mr-3" /> {p.user_name}</label></div>))}
-                    </div>
-                </div>
-                 <div>
-                    <h3 className="font-bold text-lg text-gray-800 mb-2">Select Witnesses</h3>
-                     <div className="space-y-2 max-h-48 overflow-y-auto p-4 bg-gray-50 rounded-md">
-                        {parties.filter(p=>p.user_role === 'Witness').map(p => (<div key={p.id}><label className="flex items-center"><input type="checkbox" onChange={() => handleCheckboxChange(p.id, selectedWitnessIds, setSelectedWitnessIds)} className="h-4 w-4 rounded mr-3" /> {p.user_name}</label></div>))}
-                    </div>
-                </div>
-                <div>
-                    <h3 className="font-bold text-lg text-gray-800 mb-2">Final Instructions</h3>
-                    <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="e.g., 'My Lekki property should be split equally between my children...'" className="w-full h-24 p-2 border rounded-md"></textarea>
-                </div>
+          {/* Beneficiaries */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">2. Select Beneficiaries</h3>
+            <div className="space-y-3 max-h-52 overflow-y-auto p-4 bg-gray-50 rounded-md border">
+              {beneficiaries.map(person => (
+                <CheckboxItem key={person.id} item={person} isChecked={selectedBeneficiaryIds.includes(person.id)} onToggle={() => handleToggle(person.id, selectedBeneficiaryIds, setSelectedBeneficiaryIds)} />
+              ))}
             </div>
-            )}
-             <div className="flex justify-between items-center mt-8 pt-6 border-t">
-                <Link href="/create-will/parties" className="text-gray-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100">← Back to People</Link>
-                <button onClick={handleSealWill} disabled={isLoading || isSealing} className="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 disabled:bg-gray-400">
-                    {isSealing ? 'Sealing On-Chain...' : 'Submit & Seal Will'}
-                </button>
+          </div>
+
+          {/* Witnesses */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">3. Select Witnesses</h3>
+            <div className="space-y-3 max-h-52 overflow-y-auto p-4 bg-gray-50 rounded-md border">
+              {witnesses.map(person => (
+                <CheckboxItem key={person.id} item={person} isChecked={selectedWitnessIds.includes(person.id)} onToggle={() => handleToggle(person.id, selectedWitnessIds, setSelectedWitnessIds)} />
+              ))}
             </div>
+          </div>
+
+          {/* Lawyer */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">4. Assign Lawyer for Validation</h3>
+            <select value={lawyerId} onChange={(e) => setLawyerId(e.target.value)} className="w-full px-4 py-2 border rounded-md bg-white focus:ring-2 focus:ring-blue-500">
+              <option value="" disabled>-- Select a Lawyer --</option>
+              {lawyers.map(lawyer => (<option key={lawyer.id} value={lawyer.id}>{lawyer.user_name}</option>))}
+            </select>
+          </div>
+
+          {/* Instructions */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">5. Final Instructions</h3>
+            <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="e.g., 'My Lekki property...'" className="w-full h-28 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 resize-none" />
+          </div>
         </div>
-    );
+
+        {/* Right: Preview */}
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-dashed border-blue-300 space-y-6">
+          <h3 className="text-xl font-bold text-center text-blue-900"> Will Preview</h3>
+          <PreviewSection title="Assets Included" items={previewAssets} />
+          <PreviewSection title="Beneficiaries" items={previewBeneficiaries} />
+          <PreviewSection title="Witnesses" items={previewWitnesses} />
+          <div>
+            <h4 className="font-semibold text-blue-900 mb-2">Legal Validation</h4>
+            <p className={`text-sm font-medium px-3 py-2 rounded-md ${lawyerId ? 'text-green-800 bg-green-100' : 'text-red-800 bg-red-100'}`}>
+              {lawyerId ? `Assigned to: ${lawyers.find(l => l.id === lawyerId)?.user_name}` : 'No lawyer assigned'}
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-blue-900 mb-2">Instructions</h4>
+            <p className="text-sm text-gray-700 italic bg-white p-3 rounded-md border">{instructions || "No specific instructions provided."}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer: Agreement + Actions */}
+      <div className="pt-6 border-t border-gray-200 space-y-5">
+        <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors">
+          <input type="checkbox" checked={isAgreed} onChange={() => setIsAgreed(!isAgreed)} className="mt-1 h-5 w-5 rounded-md border-gray-300 text-blue-900 focus:ring-blue-800" />
+          <span className="text-gray-800 font-medium">I have reviewed the preview and confirm that the details are correct. I agree to the creation of this immutable E-Will.</span>
+        </label>
+
+        <div className="flex justify-between items-center">
+          <Link href="/create-will/parties" className="text-gray-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">Back</Link>
+          <button
+            onClick={handleSealWill}
+            disabled={!isAgreed || isSealing || !lawyerId || previewAssets.length === 0 || previewBeneficiaries.length === 0}
+            className="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center"
+          >
+            {isSealing ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Sealing On-Chain...
+              </>
+            ) : (
+              'Confirm & Seal Will'
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
